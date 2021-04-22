@@ -112,7 +112,11 @@ void verificacion(byte *v, byte*a){
 
 ///FUNCION PARA ALMACENAR CARACTERES DESEADOS
 
-void almacenar( int pletra, char caracter, byte *letra, byte *ar ){
+void almacenar( int n, char caracter, byte *letra, byte *ar ){
+  
+  int pletra;
+  
+  pletra = n*8;
   
   switch( caracter ){   //Switch con los casos "letras" de la A a la Z
     
@@ -400,7 +404,7 @@ void imagen( byte *patron, int n  ){
       
       leds( *(patron + (indice)) , *(patron + (indice+1)) , *(patron + (indice+2)) , *(patron + (indice+3)) , *(patron + (indice+4)) , *(patron + (indice+5)) , *(patron + (indice+6)) ,  *(patron + (indice+7)) );
       
-      delay(500);
+      delay(3000);
     }
   
 }
