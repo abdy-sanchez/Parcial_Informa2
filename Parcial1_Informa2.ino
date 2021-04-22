@@ -1,7 +1,12 @@
+//Variables y Arreglos para el Codigo
 
+char num ; //Almacenará el primer numero que se le pide al usuario para definir lo que quiere hacer
 
+//ARREGLO PARA ENCENDER TODOS LOS LEDS
+byte verificacion[] = {B11111111 ,B11111111 ,B11111111 , B11111111, B11111111,B11111111 ,B11111111 ,B11111111} ;
 
-
+//ARREGLO PARA APAGAR TODOS LOS LEDS
+byte apagar[] = {B00000000 ,B00000000 ,B00000000 , B00000000, B00000000,B00000000 ,B00000000 ,B00000000};
 
 
 
@@ -85,17 +90,30 @@ void loop(){
   
   ////CUERPO DEL LOOP
   
-  if(   ){			//Condicion #1 Si la respuesta del usuario es [0]
+  
+  num = Serial.read();  	//La funcion .read lee el primer byte del monitor y se lo asigna a la variable num 
+  
+  
+  if( num == 48  ){			//Condicion #1 Si la respuesta del usuario es [0]
+  
+  	Serial.println("---PROCESO DE VERIFICACION---");
+    
+    //ENCENDEMOS TODOS LOS LEDS
+    leds(verificacion[0],verificacion[1],verificacion[2],verificacion[3],verificacion[4],verificacion[5],verificacion[6],verificacion[7]);
+    
+    //ESPERAMOS 2.5 SEGUNDOS
+    delay(2500);
+    
+    //APAGAMOS TODOS LOS LEDS
+    leds(apagar[0],apagar[1],apagar[2],apagar[3],apagar[4],apagar[5],apagar[6],apagar[7]);
+  
+  }
+  else if( num == 49  ){			//Condicion #2 Si la respuesta del usuario es [1]
   
   
   
   }
-  else if(   ){			//Condicion #2 Si la respuesta del usuario es [1]
-  
-  
-  
-  }
-  else if(   ){			//Condicion #4 Si la respuesta del usuario es [2]
+  else if( num == 50  ){			//Condicion #4 Si la respuesta del usuario es [2]
   
   
   
