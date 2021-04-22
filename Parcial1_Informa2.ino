@@ -1,6 +1,6 @@
 //Variables y Arreglos para el Codigo
 
-//ARREGLO BIDIMENSIONAL QUE CONTIENE TODAS LAS LETRAS
+//ARREGLO BIDIMENSIONAL QUE CONTIENE TODAS LAS LETRAS [una letra se representa con 8 bytes]
 
 byte letras[26][8] = {{B00011000,B00111100,B01100110,B01100110,B01111110,B01111110,B01100110,B01100110},
 {B01111100,B01100110,B01100110,B01111100,B01111110,B01100110,B01100110,B01111100},
@@ -31,7 +31,7 @@ byte letras[26][8] = {{B00011000,B00111100,B01100110,B01100110,B01111110,B011111
 
 char num,letra_num ; //Almacenará el primer numero que se le pide al usuario para definir lo que quiere hacer
 
-int n_patron,n_p ; //Variable que guardará el tamaño del patron del usuario
+int n_patron, n_p ; //Variable que guardará el tamaño del patron del usuario
 
 //ARREGLO PARA ENCENDER TODOS LOS LEDS
 byte encender[] = {B11111111 ,B11111111 ,B11111111 , B11111111, B11111111,B11111111 ,B11111111 ,B11111111} ;
@@ -51,11 +51,11 @@ byte apagar[] = {B00000000 ,B00000000 ,B00000000 , B00000000, B00000000,B0000000
 
 
 
-//SER
+//SER [Entrada]
 int pinData = 5 ; 
 //RCLK [Buffer de salida]
 int pinLatch = 6 ;
-//SRCLK
+//SRCLK [Registro de Desplazamiento]
 int pinClock = 7 ;
 
 #define TIEMPO 150
@@ -66,6 +66,7 @@ int pinClock = 7 ;
 void leds( int f1, int f2, int f3, int f4, int f5, int f6, int f7, int f8 ){
 
   //Las funciones shiftOut nos sirven para despazar la informacion (1,0) por los diferentes Microcontroladores
+  //LSBFIRST: leer el byte desde el bit menos significativo [el de toda la derecha]
   
   shiftOut(pinData, pinClock, LSBFIRST, f8);
   
@@ -114,15 +115,18 @@ void verificacion(byte *v, byte*a){
 
 void almacenar( int n, char caracter, byte *letra, byte *ar ){
   
-  int pletra;
+  int pletra; //Variable para movernos por las "columnas" del arreglo bidimensional
   
-  pletra = n*8;
+  pletra = n*8 ;
   
   switch( caracter ){   //Switch con los casos "letras" de la A a la Z
     
+      
     
-    case 'A':
-    
+    case 'A':           //En cada caso (letra) va a haber un ciclo que vaya llenando el arreglo de los patrones
+                        //del usuarion un byte a la vez. [una letra es representada con 8 bytes]
+                        //Cada for tiene limites distintos debido a la forma en la que se manejan los arreglos multidimensionales con punteros
+                        
     for(  int i = 0 ; i < 8 ; i++ ){
       
       *(ar + pletra) = *( letra + i );
@@ -396,15 +400,15 @@ void almacenar( int n, char caracter, byte *letra, byte *ar ){
 
 void imagen( byte *patron, int n  ){
   
-    int indice;
+    int indice;   //corresponde al numero de las "filas" en el arreglo bidimensional
     
-    for( int v = 0  ; v < n ; v++ ){
+    for( int v = 0  ; v < n ; v++ ){      //Ciclo que se repite el mismo numero de veces que el tamaño del patron ingresado por el usuario
       
-      indice = v*8 ; 
+      indice = v*8 ; //multiplicamos por 8 para irnos moviendo por las filas [debido a la forma en la que se manejan los arreglos multidimensionales]
       
       leds( *(patron + (indice)) , *(patron + (indice+1)) , *(patron + (indice+2)) , *(patron + (indice+3)) , *(patron + (indice+4)) , *(patron + (indice+5)) , *(patron + (indice+6)) ,  *(patron + (indice+7)) );
       
-      delay(3000);
+      delay(3000);   //Tiempo de espera entre cada patron
     }
   
 }
@@ -463,7 +467,7 @@ void loop(){
     
     Serial.println(" Cuantos elementos contiene tu patron? ");		//El usuario ingesa el numero de elementos de su patron
     
-    while( Serial.available()==0 ){
+    while( Serial.available()==0 ){       //Nuevamente, si no hay nada en el monitor, preguntac cada 10s al usuario que ingrese algo valido
   	  Serial.println(" Su Respuesta: ");
   	  delay(10000);
   
@@ -479,7 +483,7 @@ void loop(){
                     //Punteros que guardan la direccion de los primeros elementos del arreglo
     byte *p_pu ;
     
-    int pos_letra = 0 ;   //Posicion letra
+    int pos_letra = 0 ;   //Posicion letra. en esta variable, se almacenará la posicion en la 1ra dimension del arreglo (filas)
     
     p_al = &letras[0][0] ;    //p_al : puntero_arregloLetras ;;; p_pu : puntero_patronUsuario
     
@@ -489,11 +493,11 @@ void loop(){
     
     for( int i = 0 ; i < n_patron ; i++ ){    //Ciclo en el cual se ingreseran por el serial lo elemntos del patron [uno por uno]
     
-    	pos_letra = i ;
+    	pos_letra = i ;         //Guardamos la posicion de la letra en el arreglo bidimensional
     	
     	Serial.println(" Ingrese UNA letra [en mayuscula]: ");
     	
-  	  while( Serial.available()==0 ){
+  	  while( Serial.available()==0 ){   //Nuevamente, si no hay nada en el monitor, preguntac cada 10s al usuario que ingrese algo valido
   	  Serial.println(" Su Respuesta: ");
   	  delay(10000);
   
@@ -501,17 +505,17 @@ void loop(){
       
       letra_num =  Serial.read(); //Lee lo ingresado
       	
-    	almacenar( pos_letra, letra_num, p_al, p_pu ); 
-    
+    	almacenar( pos_letra, letra_num, p_al, p_pu ); //Llamamos la funcion almacenar, que lo que hace basicamente es: meter en el arreglo de los patrones
+                                                      //ingresados por el usuario, los bytes que conforman un caracter
     }
     
     
     while(true){      //Ciclo para mostrar el patron infinitamente
       
       
-      imagen( p_pu , n_p );
+      imagen( p_pu , n_p );   //La funcion imagen muestra (en los leds del circuito) el numero de patrones ingresados por el usuario
       
-    	}
+    }
     
     
     
