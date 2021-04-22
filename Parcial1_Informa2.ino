@@ -1,5 +1,4 @@
-//ARREGLO LETRA A
-byte A[] = {B01100110,B01100110,B01100110,B00111100,B00011000,B00111100,B01100110,B01100110};
+
 
 
 
@@ -82,9 +81,32 @@ void loop(){
   Serial.println(" Su Respuesta: ");
   delay(10000);
   
-  } //
+  }
   
-	//IMPRESION DE LA LETRA
-  //leds(A[0] ,A[1] ,A[2] ,A[3] ,A[4] ,A[5] ,A[6] , A[7]);
+  ////CUERPO DEL LOOP
+  
+  if(   ){			//Condicion #1 Si la respuesta del usuario es [0]
+  
+  
+  
+  }
+  else if(   ){			//Condicion #2 Si la respuesta del usuario es [1]
+  
+  
+  
+  }
+  else if(   ){			//Condicion #4 Si la respuesta del usuario es [2]
+  
+  
+  
+  
+  }
+  else{			//Condicion #4 Si la respuesta del usuario es diferente de lo que se pide	
+  
+  Serial.println(" CONSEJO: RE-LEE LAS OPCIONES...");
+  delay(3000);		//Espera 3 segunos, para que el usuario lea :)
+  
+  }
+
 
 }
