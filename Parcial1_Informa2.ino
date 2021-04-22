@@ -3,7 +3,7 @@
 char num ; //Almacenará el primer numero que se le pide al usuario para definir lo que quiere hacer
 
 //ARREGLO PARA ENCENDER TODOS LOS LEDS
-byte verificacion[] = {B11111111 ,B11111111 ,B11111111 , B11111111, B11111111,B11111111 ,B11111111 ,B11111111} ;
+byte encender[] = {B11111111 ,B11111111 ,B11111111 , B11111111, B11111111,B11111111 ,B11111111 ,B11111111} ;
 
 //ARREGLO PARA APAGAR TODOS LOS LEDS
 byte apagar[] = {B00000000 ,B00000000 ,B00000000 , B00000000, B00000000,B00000000 ,B00000000 ,B00000000};
@@ -61,6 +61,24 @@ void leds( int f1, int f2, int f3, int f4, int f5, int f6, int f7, int f8 ){
 
 
 
+/////FUNCION DE VERIFICACION
+
+void verificacion(byte *v, byte*a){
+  
+  	
+    //ENCENDEMOS TODOS LOS LEDS
+    leds(*( v +0 ),*( v +1 ),*( v +2 ),*( v + 3),*( v +4 ),*( v +5 ),*( v + 6),*( v +7 ));
+    
+    //ESPERAMOS 2.5 SEGUNDOS
+    delay(2500);
+    
+    //APAGAMOS TODOS LOS LEDS
+    leds(*( a +0 ),*( a +1 ),*( a + 2),*( a +3 ),*( a + 4),*( a + 5),*( a +6 ),*( a +7 ));
+
+}
+
+
+
 void setup(){
   
   Serial.begin(9600);		//Iniciamos el Serial
@@ -98,14 +116,9 @@ void loop(){
   
   	Serial.println("---PROCESO DE VERIFICACION---");
     
-    //ENCENDEMOS TODOS LOS LEDS
-    leds(verificacion[0],verificacion[1],verificacion[2],verificacion[3],verificacion[4],verificacion[5],verificacion[6],verificacion[7]);
+	verificacion(&encender[0],&apagar[0]);			//Llamamos a la funcion VERIFICACION
     
-    //ESPERAMOS 2.5 SEGUNDOS
-    delay(2500);
-    
-    //APAGAMOS TODOS LOS LEDS
-    leds(apagar[0],apagar[1],apagar[2],apagar[3],apagar[4],apagar[5],apagar[6],apagar[7]);
+    Serial.println("---FIN DEL PROCESO DE VERIFICACION---");
   
   }
   else if( num == 49  ){			//Condicion #2 Si la respuesta del usuario es [1]
