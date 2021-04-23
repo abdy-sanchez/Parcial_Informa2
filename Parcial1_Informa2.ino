@@ -31,7 +31,7 @@ byte letras[26][8] = {{B00011000,B00111100,B01100110,B01100110,B01111110,B011111
 
 char num,letra_num ; //Almacenará el primer numero que se le pide al usuario para definir lo que quiere hacer
 
-int n_patron, n_p ; //Variable que guardará el tamaño del patron del usuario
+int n_patron, n_p, elementos_p, t_ms, num_e ; //Variable que guardará el tamaño del patron del usuario ; numero de elemntos y tiempo entre patrones
 
 //ARREGLO PARA ENCENDER TODOS LOS LEDS
 byte encender[] = {B11111111 ,B11111111 ,B11111111 , B11111111, B11111111,B11111111 ,B11111111 ,B11111111} ;
@@ -415,6 +415,207 @@ void imagen( byte *patron, int n  ){
 
 
 
+/////FUNCION IMAGEN PERO CON DELAY INGRESADO
+
+void publik( int *patron, int n, int ms  ){
+  
+    int indice;   //corresponde al numero de las "filas" en el arreglo bidimensional
+    
+    for( int v = 0  ; v < n ; v++ ){      //Ciclo que se repite el mismo numero de veces que el tamaño del patron ingresado por el usuario
+      
+      indice = v*8 ; //multiplicamos por 8 para irnos moviendo por las filas [debido a la forma en la que se manejan los arreglos multidimensionales]
+      
+      leds( *(patron + (indice)) , *(patron + (indice+1)) , *(patron + (indice+2)) , *(patron + (indice+3)) , *(patron + (indice+4)) , *(patron + (indice+5)) , *(patron + (indice+6)) ,  *(patron + (indice+7)) );
+      
+      delay(ms);   //Tiempo de espera entre cada patron [PERSONALIZADO]
+    }
+  
+}
+
+
+
+/////FUNCION PARA CREAR EL PATRON
+
+void matriz( int *nums ){
+  
+    bool condicion = true ;
+    
+    int led, fil, col ;
+    
+    char opcion ;
+  
+    //RELLENAMOS LA MATRIZ CON CEROS (LED APAGADO POR DEFECTO)
+    
+    for( int f = 0 ; f<64 ; f++ ){
+      
+      *(nums+f) = 0 ;     //asignamos cero a cada posicion
+      
+    }
+  
+    /////CICLO EN EL QUE MODIFICAREMOS LA MATRIZ
+    
+    while(condicion == true){
+      
+      Serial.println("ilumine el LED que desee con un 1 :");
+      
+        while( Serial.available()==0 ){
+        Serial.println(" Su Respuesta: ");
+        delay(10000);
+        }
+        
+        led = Serial.parseInt();		//Obtenemos lo ingresado como entero
+        
+        if(led == 1){
+          
+          Serial.println("En que posicion? [de 0 a 7] primero fila...");
+          
+        while( Serial.available()==0 ){
+        Serial.println(" Su Respuesta: ");
+        delay(10000);
+        }
+          
+         fil =  Serial.parseInt();
+         
+         Serial.println("En que posicion? [de 0 a 7] Ahora Columna...");
+         
+        while( Serial.available()==0 ){
+        Serial.println(" Su Respuesta: ");
+        delay(10000);
+        }
+        
+        col = Serial.parseInt();
+        
+        if(fil >= 0 && fil <= 7 && col >= 0 && col <= 7){
+          
+          int veces = 0, p_fila ;
+          
+          p_fila = (fil)*8;
+          
+          while(veces < col ){
+            
+            p_fila++ ;
+            
+            veces++ ;
+            
+          }
+          
+          *(nums + p_fila) = 1 ;      //LUEGO guardamos un 1 en el arreglo
+          
+          /////AHORA IMPRIMIMOS EL ARREGLO
+          int bait = 0 ;
+          
+          for( int r = 0 ; r<64 ; r++  ){
+            
+              Serial.print( *(nums+r) );
+              
+              if(bait == 7){
+                
+                Serial.println(" ");
+                bait = 0 ;
+              }
+              else{
+                
+                bait++;
+              }
+              
+              
+              
+          }
+          
+        }
+        else{
+          
+          Serial.println("FILA O COLUMNA INVALIDAS");
+        }
+          
+        
+          
+        }
+        else{
+          
+          Serial.println("INGRESE UNICAMENTE UN 1...");
+          
+        }
+        
+        
+        //////PREGUNTAMOS AL USUARIO SI QUIERE ENCENDER MAS LEDS O TERMINAR EL PATRON
+        
+        Serial.println(" Desea cambiar mas leds? [0] SI ; [1] NO");
+        
+        while( Serial.available()==0 ){
+        Serial.println(" Su Respuesta: ");
+        delay(10000);
+        }
+        
+        opcion = Serial.read();  	//La funcion .read lee el primer byte del monitor y se lo asigna a la variable opcion
+        
+        if( opcion == 48 ){
+          
+          condicion = true ;
+        }
+        else{
+          
+          condicion = false ;
+        }
+        
+      
+    }//fin while
+  
+  
+  ///fin funcion
+}
+
+
+
+//////Funcion para convertir cada fila de 1s y 0s a un entero
+
+
+void conversion( int *matriz, int *a_nums ){
+  
+  int a, convert ;
+  
+  for(int f = 0; f<8 ;f++){
+    
+    a = f*8 ;
+    
+    
+    convert = ((*(matriz+a))*pow(2,7))+((*(matriz+(a+1)))*pow(2,6))+((*(matriz+(a+2)))*pow(2,5))+((*(matriz+(a+3)))*pow(2,4))+((*(matriz+(a+4)))*pow(2,3))+((*(matriz+(a+5)))*pow(2,2))+((*(matriz+(a+6)))*(2))+((*(matriz+(a+7)))*(1)) ;
+    
+    *(a_nums+f) = convert ;
+    
+  }
+  
+}///fin funcion
+
+
+
+
+//////FUNCION PARA RELLENAR EL ARREGLO CON LOS PATRONES DEL USUARIO
+
+
+void relleno( int inicio , int *ar, int *convert ){
+  
+  int pos ;
+  
+  pos = inicio ;
+  
+  for(int e = 0; e<8 ;e++){
+    
+      *(ar + pos )  = *( convert + e) ;
+      
+      pos++ ;
+    
+  }
+  
+}//fin funcion
+
+
+//////FUNCION PUBLIK
+
+
+
+/////SETUP Y LOOP
+
 void setup(){
   
   Serial.begin(9600);		//Iniciamos el Serial
@@ -477,8 +678,6 @@ void loop(){
     
     n_p = n_patron ;      //Guardamos el numero en otra variable 
     
-    byte p_usuario[n_patron][8] ;			//Genereamos un arreglo en el cual se guardaran los byres que componen las imagenes del patron
-    
     byte *p_al ;
                     //Punteros que guardan la direccion de los primeros elementos del arreglo
     byte *p_pu ;
@@ -487,7 +686,9 @@ void loop(){
     
     p_al = &letras[0][0] ;    //p_al : puntero_arregloLetras ;;; p_pu : puntero_patronUsuario
     
-    p_pu = &p_usuario[0][0];
+    p_pu = new byte[n_patron*8];  //Genereamos un arreglo en el cual se guardaran los bytes que componen las imagenes del patron
+    
+    //el argumento byte[n_patron*8] es como tener un arreglo byte[n_patron][8]
     
     
     
@@ -517,14 +718,76 @@ void loop(){
       
     }
     
-    
+    delete p_pu;      //Liberamos el espacio de memoria
     
   
   }
   else if( num == 50  ){			//Condicion #4 Si la respuesta del usuario es [2]
   
   
+    Serial.println("---GENERACION DE PATRON PERSONALIZADO---");
+    
+    Serial.println(" Cuantos elementos contiene tu patron? ");		//El usuario ingesa el numero de elementos de su patron PERSONALIZADO
+    
+      while( Serial.available()==0 ){       //Nuevamente, si no hay nada en el monitor, preguntac cada 10s al usuario que ingrese algo valido
+  	  Serial.println(" Su Respuesta: ");
+  	  delay(10000);
   
+    }
+    
+    elementos_p = Serial.parseInt();		//Obtenemos lo ingresado como entero
+    
+    num_e = elementos_p ;     //guardamos el numero de elementos en otra variable
+    
+      Serial.println(" Cuanto tiempo desea que haya entre cada patron? [en milisegundos] ");		//El usuario ingesa el numero de elementos de su patron PERSONALIZADO
+    
+      while( Serial.available()==0 ){       //Nuevamente, si no hay nada en el monitor, preguntac cada 10s al usuario que ingrese algo valido
+  	  Serial.println(" Su Respuesta: ");
+  	  delay(10000);
+  
+    }
+    
+    t_ms = Serial.parseInt();     //Obtenemos el tiempo entre cada patron
+    
+    
+    int *a_personalizado ;       //Puntero del arreglo del patron personalizado
+    
+    a_personalizado = new int[elementos_p*8] ;   //Arreglo en el que van a ir los patrones personalizados del usuario
+  
+    
+    for(  int x = 0 ; x < num_e  ; x++  ){    //Ciclo que se repetira cuantos elemento quiera ingresar el usuario
+      
+      int index ;
+      
+      int *bin ;
+      
+      int *dec ;
+      
+      bin = new int[64];    //Arreglo que representará 1 byte en cada fila
+      
+      dec = new int[8];     //Arreglo en el que se almacenarán (con un numero decimal) las representaciones de una fila de leds
+      
+      index = x*8 ;
+      
+      matriz( bin );      //Modificamos la matriz que contiene la representacion de leds
+      
+      conversion(bin,dec);   //convertimos las filas de bin a numeros en el sistema decimal
+      
+      relleno( index , a_personalizado , dec );   //Llenamos el arreglo con el patron
+      
+      delete []bin ;
+      
+      delete []dec ;
+      
+    }
+    
+    while(true){      //Ciclo que se repetirá de forma indefinida mostrando los leds con el patron
+      
+      publik(a_personalizado,num_e,t_ms );
+      
+    }
+    
+    delete a_personalizado ;
   
   }
   else{			//Condicion #4 Si la respuesta del usuario es diferente de lo que se pide	
