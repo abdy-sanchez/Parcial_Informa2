@@ -56,3 +56,7 @@
   tiras el anterior proceso. cuando finalices
   se iluminaran los leds correspondientes
   con el tiempo que ingresaste. 
+
+
+
+  [Terminado]
