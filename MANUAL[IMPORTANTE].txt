@@ -1,4 +1,61 @@
----------MANUAL BÁSICO PARA USO RÁPIDO---------
+----------MANUAL BÁSICO PARA USO RÁPIDO----------
 
+ Nuestro código se caracteriza por ser amigable 
+ e intuitivo, no se necesita ser un experto
+ para hacer uso de él y visualizar los
+ resultados en el circuito. Lo único que SI
+ necesitas es leer atentamente y seguir todas
+ las instrucciones al pie de la letra.
 
+ El programa cuenta con 3 sencillos modos:
+ 
+ 1) Verificación.
+ 2) Patron.
+ 3) Patron completamente personalizado.
+
+ Veamoslos brevemente...
+
+ >VERIFICACIÓN:
+
+  Accedes a el ingresando un 0 [cero] en el
+  menú principal y a continuación los leds
+  se encenderán 2.5 segundos y luego se
+  apagarán.
+
+ >PATRON:
+
+  Accedes a el ingresando un 1 [uno] en el
+  menú principal y a continuación deberás
+  ingresar el numero de imagenes que tendrá
+  tu patron, luego debes ingresar letra por
+  letra [TODAS EN MAYÚSCULA], luego de 
+  ingresar la última letra, los leds se
+  encenderán mostrando imagen por imagen.
+
+ >PATRON PERSONALIZADO:
+
+  Accedes a el ingresando un 2 [dos] en el
+  menú principal y a continuacion deberás
+  definir la cantidad de imagenes que
+  tendrá tu patron, luego debes ingresar
+  el tiempo que deseas que pase entre una
+  imagen y otra en milisegundos [1000ms = 1s]
+  
+  Luego se desplegará nuestro sistema para
+  la creación de imagenes. En el cual 
+  mediante una matriz que se mostrará en 
+  el monitor, podrás visualizar cómo está
+  quedando tu imagen personalizada, lo único
+  que tienes que hacer es ingresar las
+  coordenadas (de 0 a 7 para filas y columnas)
+  en donde deseas que se encienda un led.
+  Cuando esté terminada tu obra de arte,
+  selecciona 1 [uno] cuando se te pregunte
+  si deseas agregar más leds. Si tienes más
+  de una imagen, saldrá otra matriz y repe-
+  tiras el anterior proceso. cuando finalices
+  se iluminaran los leds correspondientes
+  con el tiempo que ingresaste. 
+  
+  
 
